@@ -14,6 +14,7 @@ refs.searchBox.addEventListener('input', debounce(searchInfo, DEBOUNCE_DELAY));
 // ==============================================================//
 function searchInfo(e) {
   e.preventDefault();
+  clearRender();
   searchCountries = e.target.value.trim();
   if (!searchCountries) {
     return;
@@ -27,8 +28,8 @@ function createSearchCountry(country) {
   if (country.length > 10) {
     Notify.info('Too many matches found. Please enter a more specific name.');
   } else if (country.length > 1 && country.length <= 10) {
-    createListCountry(country);
-    return;
+    const markup = createListCountry(country);
+    clearRender(markup);
   } else if (country.length === 1) {
     clearRender();
     createListCountryInfo(country);
@@ -36,7 +37,7 @@ function createSearchCountry(country) {
 }
 // =========================================================================//
 function createListCountry(country) {
-  const list = country
+  return country
     .map(({ name, flags }) => {
       return `<li class="country-item">
       <img class="flags"
@@ -72,7 +73,7 @@ function createListCountryInfo(country) {
     .join('');
   refs.countryInfo.innerHTML = list;
 }
-function clearRender() {
-  refs.countryInfo.innerHTML = '';
-  refs.countryList.innerHTML = '';
+function clearRender(list = '', information = '') {
+  refs.countryInfo.innerHTML = list;
+  refs.countryList.innerHTML = information;
 }
